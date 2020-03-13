@@ -1,23 +1,26 @@
 version: '3.7'
 
 services:
-  web:
-    build: ./services/web
-    command: python manage.py run -h 0.0.0.0
-    volumes:
-      - ./services/web/:/usr/src/app/
-    ports:
-      - 5000:5000
-    env_file:
-      - ./.env.dev
+#  web:
+#    build: ./services/web
+#    command: python manage.py run -h 0.0.0.0
+#    volumes:
+#      - ./services/web/:/usr/src/app/
+#    ports:
+#      - 5000:5000
+#    env_file:
+#      - ./.env.dev
   db:
     image: postgres:12-alpine
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+#      - postgres_data:/var/lib/postgresql/data/
+      - ./services/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
-      - POSTGRES_USER=hello_flask
-      - POSTGRES_PASSWORD=hello_flask
-      - POSTGRES_DB=hello_flask_dev
+      - POSTGRES_USER=ttest
+      - POSTGRES_PASSWORD=ttest
+      - POSTGRES_DB=ttest
+    ports:
+      - 5434:5432
 
-volumes:
-  postgres_data:
+#volumes:
+#  postgres_data:

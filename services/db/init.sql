@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS ttest
+(
+    data TEXT NOT NULL
+)
