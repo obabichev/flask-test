@@ -12,9 +12,9 @@ services:
 #      - ./.env.dev
   db:
     image: postgres:12-alpine
-    volumes:
+#    volumes:
 #      - postgres_data:/var/lib/postgresql/data/
-      - ./services/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+#      - ./services/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       - POSTGRES_USER=ttest
       - POSTGRES_PASSWORD=ttest
