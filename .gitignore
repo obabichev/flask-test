@@ -2,3 +2,6 @@
 
 .env.prod
 .env.prod.db
+.env
+__pycache__/
+venv/
