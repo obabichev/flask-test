@@ -4,8 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-print("os.environ['APP_SETTINGS']", os.environ['APP_SETTINGS'])
-
 app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -15,7 +13,7 @@ db = SQLAlchemy(app)
 
 
 class Book(db.Model):
-    __tablename__ = 'books'
+    __tablename__ = 'book'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String())
