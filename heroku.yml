@@ -1,7 +1,8 @@
 build:
   docker:
     web: Dockerfile
+    migrate: Dockerfile.release
 release:
-  image: web
+  image: migrate
   command:
-    - python manage.py db upgrade
+    - ./deployment-tasks.sh
