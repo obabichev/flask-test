@@ -4,4 +4,4 @@ build:
 release:
   image: web
   command:
-    - python manage.py migrate
+    - python manage.py db upgrade
