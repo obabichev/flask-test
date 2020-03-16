@@ -3,5 +3,6 @@
 .env.prod
 .env.prod.db
 .env
+.envrc
 __pycache__/
 venv/
