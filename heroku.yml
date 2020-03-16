@@ -4,5 +4,3 @@ build:
     migrate: Dockerfile.release
 release:
   image: migrate
-  command:
-    - ./deployment-tasks.sh
