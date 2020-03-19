@@ -13,17 +13,21 @@ db = SQLAlchemy(app)
 
 
 class Book(db.Model):
-    __tablename__ = 'book'
+    __tablename__ = 'books'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String())
     author = db.Column(db.String())
     published = db.Column(db.String())
+    neu = db.Column(db.String())
+    also = db.Column(db.String())
 
-    def __init__(self, name, author, published):
+    def __init__(self, name, author, published, neu, also):
         self.name = name
         self.author = author
         self.published = published
+        self.neu = neu
+        self.also = also
 
     def __repr__(self):
         return '<id {}>'.format(self.id)
@@ -33,8 +37,42 @@ class Book(db.Model):
             'id': self.id,
             'name': self.name,
             'author': self.author,
-            'published': self.published
+            'published': self.published,
+            'neu': self.neu,
+            'also': self.also
         }
+
+
+user_environment = db.Table(
+    'user_environment',
+    # db.Column(db.Integer, primary_key=True),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('environment_id', db.Integer, db.ForeignKey('environment.id'), primary_key=True)
+)
+
+
+class User(db.Model):
+    __tablename__ = 'user'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(), nullable=False)
+
+
+class Environment(db.Model):
+    __tablename__ = 'environment'
+
+    id = db.Column(db.Integer, primary_key=True)
+    resources = db.relationship('Resource', backref='environment', lazy=True)
+    users = db.relationship('User', secondary=user_environment, lazy='subquery',
+                            backref=db.backref('environments', lazy=True))
+
+
+class Resource(db.Model):
+    __tablename__ = 'resource'
+
+    id = db.Column(db.Integer, primary_key=True)
+    environment_id = db.Column(db.Integer, db.ForeignKey('environment.id'),
+                               nullable=False)
 
 
 @app.route("/")
