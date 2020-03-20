@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import ENUM
 
 app = Flask(__name__)
 
@@ -45,7 +46,6 @@ class Book(db.Model):
 
 user_environment = db.Table(
     'user_environment',
-    # db.Column(db.Integer, primary_key=True),
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
     db.Column('environment_id', db.Integer, db.ForeignKey('environment.id'), primary_key=True)
 )
@@ -71,8 +71,29 @@ class Resource(db.Model):
     __tablename__ = 'resource'
 
     id = db.Column(db.Integer, primary_key=True)
-    environment_id = db.Column(db.Integer, db.ForeignKey('environment.id'),
-                               nullable=False)
+    environment_id = db.Column(db.Integer, db.ForeignKey('environment.id'), nullable=False)
+
+
+class Document(db.Model):
+    __tablename__ = 'document'
+
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String, nullable=True)
+    document_type = db.Column(
+        "document_type",
+        ENUM("article", "court", "book", "magazine", "link", "other", name="document_type", create_type=False)
+    )
+
+    file_id = db.Column(db.Integer, db.ForeignKey('file.id'), nullable=True)
+    file = db.relationship('File', backref='documents', lazy=True)
+
+
+class File(db.Model):
+    __tablename__ = 'file'
+
+    id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String)
+    file_type = db.Column("file_type", ENUM("pdf", "doc", "xls", name="file_type", create_type=False))
 
 
 @app.route("/")
