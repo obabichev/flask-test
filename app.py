@@ -93,7 +93,7 @@ class File(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String)
-    file_type = db.Column("file_type", ENUM("pdf", "doc", "xls", name="file_type", create_type=False))
+    file_type = db.Column("file_type", ENUM("pdf", "doc", "xls", name="file_type"))
 
 
 @app.route("/")
