@@ -3,11 +3,11 @@ version: '3.7'
 services:
   web:
     build: .
-    command: python manage.py run -h 0.0.0.0
-#    volumes:
-#      - ./services/web/:/usr/src/app/
+    command: gunicorn --bind 0.0.0.0:5000 manage:app
     ports:
       - 5000:5000
+    expose:
+      - 5000
     environment:
       - APP_SETTINGS=config.DevelopmentConfig
       - DATABASE_URL=postgresql://ttest:ttest@db:5432/ttest
@@ -15,15 +15,20 @@ services:
       - db
   db:
     image: postgres:12-alpine
-#    volumes:
-#      - postgres_data:/var/lib/postgresql/data/
-#      - ./services/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
     environment:
       - POSTGRES_USER=ttest
       - POSTGRES_PASSWORD=ttest
       - POSTGRES_DB=ttest
     ports:
       - 5435:5432
+  nginx:
+    build: ./nginx
+    ports:
+      - 1337:80
+    depends_on:
+      - web
 
-#volumes:
-#  postgres_data:
+volumes:
+  postgres_data:
