@@ -1,0 +1,18 @@
+<html>
+<head>
+    {% if title %}
+    <title>{{ title }} - Test app</title>
+    {% else %}
+    <title>Welcome to Test app</title>
+    {% endif %}
+</head>
+<body>
+<div>
+    Test app:
+    <a href="/index">Home</a>
+    <a href="/login">Login</a>
+</div>
+<hr>
+{% block content %}{% endblock %}
+</body>
+</html>
