@@ -12,19 +12,9 @@ db = SQLAlchemy(app)
 
 from app import routes
 
-from app.models import User
+from app.models import User, Environment, Resource
 
-# def create_app():
-#     app = Flask(__name__, instance_relative_config=True)
-#
-#     app.config.from_object(os.environ['APP_SETTINGS'])
-#     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-#
-#     print("os.environ['APP_SETTINGS']", os.environ['APP_SETTINGS'])
-#     print('SQLALCHEMY_DATABASE_URI', app.config['SQLALCHEMY_DATABASE_URI'])
-#
-#     @app.route('/hello')
-#     def hello():
-#         return 'Hello, World!!!!'
-#
-#     return app
+
+@app.shell_context_processor
+def make_shell_context():
+    return {'db': db, 'User': User, 'Environment': Environment, 'Resource': Resource}
