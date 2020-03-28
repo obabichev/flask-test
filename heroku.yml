@@ -1,0 +1,14 @@
+setup:
+  addons:
+    - plan: heroku-postgresql
+build:
+  docker:
+    web: ./Dockerfile
+  config:
+    REQUIREMENTS_FILENAME: heroku.yml
+release:
+  image: web
+  command:
+    - python manage.py db upgrade
+run:
+  web: gunicorn app:app
