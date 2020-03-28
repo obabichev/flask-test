@@ -6,8 +6,6 @@ services:
     command: gunicorn --bind 0.0.0.0:5000 manage:app
     ports:
       - 5000:5000
-    expose:
-      - 5000
     environment:
       - APP_SETTINGS=config.DevelopmentConfig
       - DATABASE_URL=postgresql://ttest:ttest@db:5432/ttest
@@ -23,12 +21,6 @@ services:
       - POSTGRES_DB=ttest
     ports:
       - 5435:5432
-  nginx:
-    build: ./nginx
-    ports:
-      - 1337:80
-    depends_on:
-      - web
 
 volumes:
   postgres_data:

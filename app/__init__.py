@@ -7,7 +7,6 @@ from flask_login import LoginManager
 app = Flask(__name__)
 
 app.config.from_object(os.environ['APP_SETTINGS'])
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 login = LoginManager(app)
 login.login_view = 'login'
