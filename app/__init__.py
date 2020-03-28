@@ -13,7 +13,7 @@ login.login_view = 'login'
 
 db = SQLAlchemy(app)
 
-from app import routes
+from app import routes, errors
 
 from app.models import User, Environment, Resource
 
