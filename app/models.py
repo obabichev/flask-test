@@ -1,11 +1,14 @@
 from datetime import datetime
 
+from sqlalchemy import func
+
 from app import db
 from sqlalchemy.dialects.postgresql import ENUM
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import login
 from flask_login import UserMixin
 from hashlib import md5
+from sqlalchemy_utils import LtreeType
 
 
 class User(UserMixin, db.Model):
@@ -95,3 +98,20 @@ class File(db.Model):
 
     def __repr__(self):
         return '<File {}>'.format(self.id)
+
+
+class Tag(db.Model):
+    __tablename__ = 'tag'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128), nullable=False)
+    path = db.Column(LtreeType, nullable=False)
+
+    def get_direct_descendants(self):
+        return Tag.query.filter(
+            func.nlevel(Tag.path) == len(self.path) + 1,
+            Tag.path.descendant_of(self.path)
+        ).all()
+
+    def __repr__(self):
+        return '<Tag {}>'.format(self.name)

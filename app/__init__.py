@@ -5,6 +5,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from logging.handlers import SMTPHandler
+from sqlalchemy_utils import Ltree
 
 app = Flask(__name__)
 
@@ -17,12 +18,21 @@ db = SQLAlchemy(app)
 
 from app import routes, errors
 
-from app.models import User, Environment, Resource
+from app.models import User, Environment, Resource, Tag
 
 
 @app.shell_context_processor
 def make_shell_context():
-    return {'db': db, 'User': User, 'Environment': Environment, 'Resource': Resource}
+    return {
+        'db': db,
+
+        'User': User,
+        'Environment': Environment,
+        'Resource': Resource,
+        'Tag': Tag,
+
+        'Ltree': Ltree
+    }
 
 
 if not app.debug:

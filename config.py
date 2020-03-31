@@ -30,7 +30,7 @@ class StagingConfig(Config):
 
 class DevelopmentConfig(Config):
     DEVELOPMENT = True
-    FLASK_DEBUG = os.environ['FLASK_DEBUG']
+    FLASK_DEBUG = os.environ.get('FLASK_DEBUG')
 
 
 class TestingConfig(Config):
