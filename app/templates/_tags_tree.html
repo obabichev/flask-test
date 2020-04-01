@@ -1,5 +1,5 @@
 <li>
-    {{ tag.name }}
+    {{ tag.name }} <a href="{{ url_for('add_tag', parent_id=tag.id) }}">+</a>
     <ul>
         {% for tag in tag.get_direct_descendants() %}
         {% include '_tags_tree.html' %}

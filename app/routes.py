@@ -4,10 +4,11 @@ from werkzeug.urls import url_parse
 
 from app import app, db
 from flask import render_template, flash, redirect, url_for, request
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, AddTagForm
 from flask_login import current_user, login_user, login_required
 from app.models import User, Tag
 from flask_login import logout_user
+from sqlalchemy_utils import Ltree
 
 
 @app.route('/')
@@ -98,3 +99,24 @@ def tags_page():
     tag = Tag.query.filter_by(name='root').first()
     print(tag)
     return render_template('tags.html', tag=tag)
+
+
+@app.route('/add_tag', methods=['GET', 'POST'])
+@login_required
+def add_tag():
+    parent_id = request.args.get('parent_id')
+
+    if parent_id is None:
+        return redirect(url_for('tags_page'))
+
+    form = AddTagForm()
+
+    if form.validate_on_submit():
+        parent = Tag.query.get(parent_id)
+        print(parent)
+        tag = Tag(name=form.name.data, path=Ltree(str(parent.path) + '.' + form.name.data))
+        db.session.add(tag)
+        db.session.commit()
+        return redirect(url_for('tags_page'))
+
+    return render_template('add_tag.html', form=form)
