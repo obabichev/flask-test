@@ -1,9 +1,10 @@
 from datetime import datetime
 
-from sqlalchemy import func
-
 from app import db
 from sqlalchemy.dialects.postgresql import ENUM
+from sqlalchemy import func
+from sqlalchemy.sql import expression
+from sqlalchemy_utils.types.ltree import LQUERY
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import login
 from flask_login import UserMixin
@@ -108,9 +109,9 @@ class Tag(db.Model):
     path = db.Column(LtreeType, nullable=False)
 
     def get_direct_descendants(self):
+        lquery = str(self.path) + '.*{1,1}'
         return Tag.query.filter(
-            func.nlevel(Tag.path) == len(self.path) + 1,
-            Tag.path.descendant_of(self.path)
+            Tag.path.lquery(expression.cast(lquery, LQUERY))
         ).all()
 
     def __repr__(self):
