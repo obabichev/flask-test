@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 
 from app import app, db
 from flask import render_template, flash, redirect, url_for, request, send_file, Response
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, AddTagForm, UploadFileForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, AddTagForm, UploadFileForm, TagsForm
 from flask_login import current_user, login_user, login_required
 from app.models import User, Tag, File
 from flask_login import logout_user
@@ -97,12 +97,22 @@ def edit_profile():
     return render_template('edit_profile.html', title='Edit Profile', form=form)
 
 
-@app.route('/tags')
+@app.route('/tags', methods=['GET', 'POST'])
 @login_required
 def tags_page():
+    form = TagsForm()
     tag = Tag.query.filter_by(name='root').first()
-    print(tag)
-    return render_template('tags.html', tag=tag)
+
+    if request.method == 'POST':
+        id = form.parent.data
+        if id is None:
+            flash('Choose parent')
+            return redirect(url_for('tags_page'))
+
+        flash('Parent {} was selected'.format(id))
+        return redirect(url_for('tags_page'))
+
+    return render_template('tags.html', tag=tag, form=form)
 
 
 @app.route('/add_tag', methods=['GET', 'POST'])
