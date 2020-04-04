@@ -5,7 +5,7 @@ services:
     build: .
     command: gunicorn --bind 0.0.0.0:5000 manage:app
     ports:
-      - 5001:5000
+      - 5002:5000
     environment:
       - APP_SETTINGS=config.DevelopmentConfig
       - DATABASE_URL=postgresql://ttest:ttest@db:5432/ttest

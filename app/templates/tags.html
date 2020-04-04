@@ -2,8 +2,10 @@
 {% block content %}
 <h1>Tags</h1>
 
+{% if tag %}
 <ul>
     {% include '_tags_tree.html' %}
 </ul>
+{% endif %}
 
 {% endblock %}

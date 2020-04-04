@@ -96,6 +96,7 @@ class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String)
     file_type = db.Column("file_type", ENUM("pdf", "doc", "xls", name="file_type"))
+    mimetype = db.Column(db.String(256))
 
     def __repr__(self):
         return '<File {}>'.format(self.id)

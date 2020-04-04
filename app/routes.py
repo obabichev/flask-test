@@ -1,14 +1,17 @@
 from datetime import datetime
 
+import boto3
 from werkzeug.urls import url_parse
 
 from app import app, db
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, send_file, Response
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, AddTagForm
 from flask_login import current_user, login_user, login_required
-from app.models import User, Tag
+from app.models import User, Tag, File
 from flask_login import logout_user
 from sqlalchemy_utils import Ltree
+
+BUCKET = 'oob-bucket'
 
 
 @app.route('/')
@@ -120,3 +123,49 @@ def add_tag():
         return redirect(url_for('tags_page'))
 
     return render_template('add_tag.html', form=form)
+
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'GET':
+        return render_template('upload.html')
+
+    f = request.files['file']
+    print(f)
+
+    key = f.filename
+    mimetype = f.mimetype
+
+    s3 = boto3.client('s3')
+    s3.upload_fileobj(f, BUCKET, key)
+
+    file = File(url=key, file_type='pdf', mimetype=mimetype)
+    db.session.add(file)
+    db.session.commit()
+
+    return redirect(url_for('files'))
+
+
+@app.route('/files')
+def files():
+    _files = File.query.all()
+    return render_template('files.html', files=_files)
+
+
+@app.route('/download')
+def download():
+    id = request.args.get('id')
+
+    file = File.query.get(int(id))
+
+    s3 = boto3.client('s3')
+
+    s3_response_object = s3.get_object(Bucket=BUCKET, Key=file.url)
+    object_content = s3_response_object['Body'].read()
+
+    print('content', object_content)
+    return Response(
+        object_content,
+        mimetype=file.mimetype,
+        headers={"Content-Disposition": "attachment;filename=" + file.url}
+    )

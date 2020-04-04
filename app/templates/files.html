@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Files</h1>
+
+{% for file in files %}
+<div>
+    <div>
+        <span>{{ file.url }}</span>
+        <a href="{{ url_for('download', id=file.id) }}">Download</a>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
