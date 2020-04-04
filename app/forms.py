@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
+from flask_wtf.file import FileField
 
 from app.models import User
 
@@ -50,3 +51,7 @@ class EditProfileForm(FlaskForm):
 class AddTagForm(FlaskForm):
     name = StringField('Name', validators=[Length(min=1, max=128)])
     submit = SubmitField('Submit')
+
+
+class UploadFileForm(FlaskForm):
+    file = FileField()

@@ -2,9 +2,10 @@
 {% block content %}
 <h1>Upload</h1>
 
-<form method="POST" action="/upload" enctype=multipart/form-data>
-    <input type=file name=file>
-    <input type=submit value=Upload>
+<form method="post" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    {{ form.file }}
+    <input type="submit">
 </form>
 
 {% endblock %}

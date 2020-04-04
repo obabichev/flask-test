@@ -2,10 +2,11 @@ from datetime import datetime
 
 import boto3
 from werkzeug.urls import url_parse
+from werkzeug.utils import secure_filename
 
 from app import app, db
 from flask import render_template, flash, redirect, url_for, request, send_file, Response
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, AddTagForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, AddTagForm, UploadFileForm
 from flask_login import current_user, login_user, login_required
 from app.models import User, Tag, File
 from flask_login import logout_user
@@ -127,23 +128,23 @@ def add_tag():
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
-    if request.method == 'GET':
-        return render_template('upload.html')
+    form = UploadFileForm()
 
-    f = request.files['file']
-    print(f)
+    if form.validate_on_submit():
+        filename = secure_filename(form.file.data.filename)
+        f = form.file.data
+        mimetype = f.mimetype
 
-    key = f.filename
-    mimetype = f.mimetype
+        s3 = boto3.client('s3')
+        s3.upload_fileobj(f, BUCKET, filename)
 
-    s3 = boto3.client('s3')
-    s3.upload_fileobj(f, BUCKET, key)
+        file = File(url=filename, file_type='pdf', mimetype=mimetype)
+        db.session.add(file)
+        db.session.commit()
 
-    file = File(url=key, file_type='pdf', mimetype=mimetype)
-    db.session.add(file)
-    db.session.commit()
+        return redirect(url_for('files'))
 
-    return redirect(url_for('files'))
+    return render_template('upload.html', form=form)
 
 
 @app.route('/files')
